@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^6.4.8",
+    "@mui/material": "^6.4.8",
+    "@mui/x-data-grid": "^7.28.1",
+    "@mui/x-date-pickers": "^7.28.0",
+    "react-scripts": "^5.0.1"
+  }
+}

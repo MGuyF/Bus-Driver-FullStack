@@ -1,0 +1,12 @@
+.gradient-bg {
+  background: linear-gradient(to bottom, rgb(245, 245, 245), rgb(250, 250, 250));
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.icon {
+  color: #6f7070;
+}
