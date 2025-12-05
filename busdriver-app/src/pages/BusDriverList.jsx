@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLoading } from '../context/LoadingContext';
+import { apiFetch } from '../services/apiAuth';
 import BusDriverModal from "../components/BusDriverModal";
+import swal from '../utils/useSwal';
 import {
   DataGrid
 } from '@mui/x-data-grid';
@@ -25,67 +28,54 @@ import {
   FormatListBulleted
 } from '@mui/icons-material';
 
-const initialRows = [
-  {
-    id: 1,
-    fullName: 'Jean Dupont',
-    phone: '0123456789',
-    email: 'jean@example.com',
-    address: '123 rue des Lilas',
-    birthDate: '1990-01-01',
-    busNumber: 'BUS-001',
-  },
-  {
-    id: 2,
-    fullName: 'Marie Claire',
-    phone: '0987654321',
-    email: 'marie@example.com',
-    address: '456 avenue des Roses',
-    birthDate: '1985-05-05',
-    busNumber: 'BUS-002',
-  },
-  {
-    id: 3,
-    fullName: 'Albert Ndayizeye',
-    phone: '612345678',
-    email: 'albert@exemple.bi',
-    address: 'Avenue du Lac Tanganyika, Bujumbura',
-    birthDate: '1992-08-12',
-    busNumber: 'BUS-003',
-  },
-  {
-    id: 4,
-    fullName: 'Fatou Ndiaye',
-    phone: '722345678',
-    email: 'fatou@exemple.sn',
-    address: 'Rue des Baobabs, Dakar',
-    birthDate: '1988-03-20',
-    busNumber: 'BUS-004',
-  },
-  {
-    id: 5,
-    fullName: 'Lucas Martin',
-    phone: '0632457890',
-    email: 'lucas.martin@example.fr',
-    address: '34 rue de Lyon, Paris',
-    birthDate: '1995-11-23',
-    busNumber: 'BUS-005',
-  },
-  {
-    id: 6,
-    fullName: 'Chantal Uwimana',
-    phone: '712345678',
-    email: 'chantal@exemple.bi',
-    address: 'Quartier Kabondo, Goma',
-    birthDate: '1987-09-14',
-    busNumber: 'BUS-006',
-  }
-];
-
 export default function StyledDataGrid() {
+  const { showLoader, hideLoader } = useLoading();
+  const [rows, setRows] = useState([]);
+  const [rowCount, setRowCount] = useState(0);
+  const [page, setPage] = useState(0); // DataGrid uses 0-based page index
+  const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [modalMode, setModalMode] = useState('view');
+
+  const fetchDrivers = async (page, pageSize, search) => {
+    setLoading(true);
+    showLoader();
+    try {
+      const params = new URLSearchParams({
+        page: page + 1, // backend is usually 1-based
+        page_size: pageSize,
+      });
+      if (search) params.append('search', search);
+      const response = await apiFetch(`/busdrivers/?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        const isPaginated = Array.isArray(data.results);
+        setRows(isPaginated ? data.results : Array.isArray(data) ? data : []);
+        setRowCount(isPaginated ? data.count : (Array.isArray(data) ? data.length : 0));
+      } else {
+        setRows([]);
+        setRowCount(0);
+      }
+    } catch (e) {
+      setRows([]);
+      setRowCount(0);
+    } finally {
+      setLoading(false);
+      hideLoader();
+    }
+  };
+
+  useEffect(() => {
+    fetchDrivers(page, pageSize, searchTerm);
+    // eslint-disable-next-line
+  }, [page, pageSize, searchTerm]);
+
   const columns = [
     {
-      field: 'fullName',
+      field: 'full_name',
       headerName: (
         <span>
           <Person style={{ verticalAlign: 'middle' }} /> Nom complet
@@ -122,7 +112,7 @@ export default function StyledDataGrid() {
       flex: 2,
     },
     {
-      field: 'birthDate',
+      field: 'birth_date',
       headerName: (
         <span>
           <DateRange style={{ verticalAlign: 'middle' }} /> D.Naissance
@@ -131,7 +121,7 @@ export default function StyledDataGrid() {
       width: 150,
     },
     {
-      field: 'busNumber',
+      field: 'bus_number',
       headerName: (
         <span>
           <DirectionsBus style={{ verticalAlign: 'middle' }} /> Bus
@@ -162,185 +152,213 @@ export default function StyledDataGrid() {
     },
   ];
 
-  // Ajoute en haut du composant :
-const [openModal, setOpenModal] = useState(false);
-const [selectedRow, setSelectedRow] = useState(null);
-const [modalMode, setModalMode] = useState('view');
+  const handleOpenModal = (row, mode) => {
+    setSelectedRow(row);
+    setModalMode(mode);
+    setOpenModal(true);
+  };
 
-const handleOpenModal = (row, mode) => {
-  setSelectedRow(row);
-  setModalMode(mode);
-  setOpenModal(true);
-};
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedRow(null);
+  };
 
-const handleCloseModal = () => {
-  setOpenModal(false);
-  setSelectedRow(null);
-};
-
-const handleSaveChanges = () => {
-  // Ici tu pourras faire un appel backend si tu veux sauvegarder
-  console.log('Save', selectedRow);
-  handleCloseModal();
-};
-
+  const handleSaveChanges = async (updatedRow) => {
+    showLoader();
+    try {
+      const response = await apiFetch(`/busdrivers/${updatedRow.id}/`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedRow),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRows(rows.map(row => row.id === data.id ? data : row));
+        handleCloseModal();
+        swal.fire({
+          icon: 'success',
+          title: 'Chauffeur modifié !',
+          text: 'Les modifications ont bien été enregistrées.',
+          confirmButtonText: 'OK'
+        });
+      } else {
+        swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Impossible de sauvegarder les modifications.',
+          confirmButtonText: 'Fermer'
+        });
+        console.error("Failed to save changes");
+      }
+    } catch (e) {
+      swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: "Une erreur s'est produite lors de l'enregistrement.",
+        confirmButtonText: 'Fermer'
+      });
+      console.error("An error occurred while saving", e);
+    } finally {
+      hideLoader();
+    }
+  };
 
   
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredRows, setFilteredRows] = useState(initialRows);
+  
 
   const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    const filtered = initialRows.filter(
-      (row) =>
-        row.fullName.toLowerCase().includes(value) ||
-        row.email.toLowerCase().includes(value)
-    );
-    setFilteredRows(filtered);
+    setSearchTerm(e.target.value);
   };
 
   return (
     <>
-    <Box
+      <Box
+        sx={{
+          display: "block"
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            marginLeft: '15px',
+            marginTop: '-46px',
+          }}
+        >
+          <FormatListBulleted sx={{ fontSize: '1.18rem', marginBottom: '8px', color: '#343434', mr: 1 }} />
+          <Typography
+            variant="h5"
+            color="#343434"
+            gutterBottom
             sx={{
-              display: "block"
+              fontSize: '1rem',
+              fontWeight: 600,
+              letterSpacing: '-0.008em',
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                position: 'absolute',
-                marginLeft: '15px',
-                marginTop: '-46px',
+            Liste Bus Driver
+          </Typography>
+        </Box>
+        <Paper
+          elevation={3}
+          sx={{
+            padding: '45px',
+            width: '85.5vw',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #e7f4ff',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+            borderRadius: '33px',
+            overflow: 'hidden',
+          }}
+        >
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
+              fullWidth
+              placeholder="Rechercher par nom ou email"
+              variant="outlined"
+              size="small"
+              value={searchTerm}
+              onChange={handleSearch}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
               }}
-            >
-              <FormatListBulleted sx={{ fontSize: '1.18rem', marginBottom: '8px', color: '#343434', mr: 1 }} />
-              <Typography
-                variant="h5"
-                color="#343434"
-                gutterBottom
-                sx={{
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  letterSpacing: '-0.008em',
-                }}
-              >
-                Liste Bus Driver
-              </Typography>
-            </Box>
-            <Paper
-  elevation={3}
-  sx={{
-    padding: '45px',
-    width: '85.5vw',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid #e7f4ff',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    borderRadius: '33px',
-    overflow: 'hidden',
-  }}
->
-  <Box sx={{ marginBottom: 2 }}>
-    <TextField
-      fullWidth
-      placeholder="Rechercher par nom ou email"
-      variant="outlined"
-      size="small"
-      value={searchTerm}
-      onChange={handleSearch}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Search />
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        '& .MuiInputBase-root': {
-          backgroundColor: 'rgba(255, 255, 255, 0)',
-          borderRadius: '10px',
-        },
-        '& input': {
-          fontSize: '0.9rem',
-          color: '#000',
-        },
-      }}
-    />
-  </Box>
+              sx={{
+                '& .MuiInputBase-root': {
+                  backgroundColor: 'rgba(255, 255, 255, 0)',
+                  borderRadius: '10px',
+                },
+                '& input': {
+                  fontSize: '0.9rem',
+                  color: '#000',
+                },
+              }}
+            />
+          </Box>
 
-  {/* Container avec scroll stylisé */}
-  <Box
-    sx={{
-      height: '52vh',
-      width: '100%',
-      overflow: 'auto',
-      '&::-webkit-scrollbar': {
-        width: '8px',
-        height: '8px',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: '#a2b3f5',
-        borderRadius: '4px',
-      },
-      '&::-webkit-scrollbar-track': {
-        backgroundColor: 'transparent',
-      },
-      scrollbarWidth: 'thin', // Firefox
-      scrollbarColor: '#a2b3f5 transparent', // Firefox
-    }}
-  >
-    <DataGrid
-      rows={filteredRows}
-      columns={columns}
-      pageSize={5}
-      rowsPerPageOptions={[5]}
-      getRowClassName={(params) =>
-        params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-      }
-      sx={{
-        border: 0,
-        '& .MuiDataGrid-columnHeaders': {
-          backgroundColor: 'transparent',
-          fontWeight: 'bold',
-          fontSize: '15.4px',
-        },
-        '& .even-row': {
-          backgroundColor: '#bdcbfb52 !important',
-        },
-        '& .MuiDataGrid-cell': {
-          fontSize: '14px',
-        },
-        '& .MuiDataGrid-columnHeaderTitle': {
-          fontWeight: '600',
-          color: '#343434',
-        },
-        '& .MuiSvgIcon-root': {
-          fontSize: '1.2rem',
-          marginTop: '-4px',
-        },
-        '& .MuiDataGrid-virtualScroller': {
-          overflowX: 'hidden',
-        },
-        '& .MuiDataGrid-container--top [role=row]': {
-          background: 'none',
-        },
-      }}
-    />
-  </Box>
-</Paper>
+          {/* Container avec scroll stylisé */}
+          <Box
+            sx={{
+              height: '52vh',
+              width: '100%',
+              overflow: 'auto',
+              '&::-webkit-scrollbar': {
+                width: '8px',
+                height: '8px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#a2b3f5',
+                borderRadius: '4px',
+              },
+              '&::-webkit-scrollbar-track': {
+                backgroundColor: 'transparent',
+              },
+              scrollbarWidth: 'thin', // Firefox
+              scrollbarColor: '#a2b3f5 transparent', // Firefox
+            }}
+          >
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              rowCount={rowCount}
+              page={page}
+              pageSize={pageSize}
+              pagination
+              paginationMode="server"
+              onPageChange={(newPage) => setPage(newPage)}
+              onPageSizeChange={(newPageSize) => {
+                setPageSize(newPageSize);
+                setPage(0); // reset to first page
+              }}
+              loading={loading}
+              rowsPerPageOptions={[5, 10, 20, 50]}
+              getRowClassName={(params) =>
+                params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+              }
+              sx={{
+                border: 0,
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: 'transparent',
+                  fontWeight: 'bold',
+                  fontSize: '15.4px',
+                },
+                '& .even-row': {
+                  backgroundColor: '#bdcbfb52 !important',
+                },
+                '& .MuiDataGrid-cell': {
+                  fontSize: '14px',
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  fontWeight: '600',
+                  color: '#343434',
+                },
+                '& .MuiSvgIcon-root': {
+                  fontSize: '1.2rem',
+                  marginTop: '-4px',
+                },
+                '& .MuiDataGrid-virtualScroller': {
+                  overflowX: 'hidden',
+                },
+                '& .MuiDataGrid-container--top [role=row]': {
+                  background: 'none',
+                },
+              }}
+            />
+          </Box>
+        </Paper>
+      </Box>
 
-    </Box>
-
-<BusDriverModal
-open={openModal}
-onClose={handleCloseModal}
-data={selectedRow}
-mode={modalMode}
-onSave={handleSaveChanges}
-/>
-</>
+      <BusDriverModal
+        open={openModal}
+        onClose={handleCloseModal}
+        data={selectedRow}
+        mode={modalMode}
+        onSave={handleSaveChanges}
+      />
+    </>
   );
 }

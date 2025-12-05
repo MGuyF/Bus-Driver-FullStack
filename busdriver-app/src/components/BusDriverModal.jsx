@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -17,9 +17,29 @@ import EmailIcon from '@mui/icons-material/Email';
 import HomeIcon from '@mui/icons-material/Home';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import BusinessIcon from '@mui/icons-material/Business';
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
 
 
 export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    setFormData(data || {});
+  }, [data]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (name, value) => {
+    // Assuming the value is a Date object or a string that can be formatted
+    // You might need to format it to 'YYYY-MM-DD'
+    const formattedDate = value instanceof Date ? value.toISOString().split('T')[0] : value;
+    setFormData(prev => ({ ...prev, [name]: formattedDate }));
+  };
 
   const textFieldStyle = {
     '& .MuiInputBase-root': {
@@ -96,7 +116,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       label="Nom complet"
       fullWidth
       sx={textFieldStyle}
-      value={data?.fullName || ''}
+      name="full_name"
+      value={formData?.full_name || ''}
+      onChange={handleChange}
       InputProps={{
         readOnly: isView,
         startAdornment: (
@@ -113,7 +135,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       label="Téléphone"
       fullWidth
       sx={textFieldStyle}
-      value={data?.phone || ''}
+      name="phone"
+      value={formData?.phone || ''}
+      onChange={handleChange}
       InputProps={{
         readOnly: isView,
         startAdornment: (
@@ -130,7 +154,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       label="Email"
       fullWidth
       sx={textFieldStyle}
-      value={data?.email || ''}
+      name="email"
+      value={formData?.email || ''}
+      onChange={handleChange}
       InputProps={{
         readOnly: isView,
         startAdornment: (
@@ -147,7 +173,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       label="Adresse"
       fullWidth
       sx={textFieldStyle}
-      value={data?.address || ''}
+      name="address"
+      value={formData?.address || ''}
+      onChange={handleChange}
       InputProps={{
         readOnly: isView,
         startAdornment: (
@@ -164,7 +192,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       label="Date de naissance"
       fullWidth
       sx={textFieldStyle}
-      value={data?.birthDate || ''}
+      name="birth_date"
+      value={formData?.birth_date || ''}
+      onChange={handleChange}
       InputProps={{
         readOnly: isView,
         startAdornment: (
@@ -181,7 +211,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       label="Bus"
       fullWidth
       sx={textFieldStyle}
-      value={data?.busNumber || ''}
+      name="bus_number"
+      value={formData?.bus_number || ''}
+      onChange={handleChange}
       InputProps={{
         readOnly: isView,
         startAdornment: (
@@ -192,16 +224,140 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
       }}
     />
   </Grid>
+
+  <Grid item xs={6}>
+    <TextField
+      label="Numéro de permis"
+      name="license_number"
+      fullWidth
+      sx={textFieldStyle}
+      value={formData?.license_number || ''}
+      onChange={handleChange}
+      InputProps={{
+        readOnly: isView,
+        startAdornment: (
+          <InputAdornment position="start">
+            <CardMembershipIcon />
+          </InputAdornment>
+        )
+      }}
+    />
+  </Grid>
+
+  <Grid item xs={6}>
+    <TextField
+      label="Expiration du permis"
+      name="license_expiry"
+      fullWidth
+      type="date"
+      sx={textFieldStyle}
+      value={formData?.license_expiry || ''}
+      onChange={(e) => handleDateChange('license_expiry', e.target.value)}
+      InputLabelProps={{
+          shrink: true,
+        }}
+      InputProps={{
+        readOnly: isView,
+        startAdornment: (
+          <InputAdornment position="start">
+            <CalendarTodayIcon />
+          </InputAdornment>
+        )
+      }}
+    />
+  </Grid>
+
+  <Grid item xs={6}>
+    <TextField
+      label="Société"
+      name="company_name"
+      fullWidth
+      sx={textFieldStyle}
+      value={formData?.company_name || ''}
+      onChange={handleChange}
+      InputProps={{
+        readOnly: isView,
+        startAdornment: (
+          <InputAdornment position="start">
+            <BusinessIcon />
+          </InputAdornment>
+        )
+      }}
+    />
+  </Grid>
+
+    <Grid item xs={6}>
+    <TextField
+      label="Type de bus"
+      name="bus_type"
+      fullWidth
+      sx={textFieldStyle}
+      value={formData?.bus_type || ''}
+      onChange={handleChange}
+      InputProps={{
+        readOnly: isView,
+        startAdornment: (
+          <InputAdornment position="start">
+            <DirectionsBusIcon />
+          </InputAdornment>
+        )
+      }}
+    />
+  </Grid>
+
+  <Grid item xs={6}>
+    <TextField
+      label="Années d'expérience"
+      name="experience_years"
+      type="number"
+      fullWidth
+      sx={textFieldStyle}
+      value={formData?.experience_years || ''}
+      onChange={handleChange}
+      InputProps={{
+        readOnly: isView,
+        startAdornment: (
+          <InputAdornment position="start">
+            <WorkHistoryIcon />
+          </InputAdornment>
+        )
+      }}
+    />
+  </Grid>
+
+  <Grid item xs={6}>
+    <TextField
+      label="Date d'embauche"
+      name="hire_date"
+      type="date"
+      fullWidth
+      sx={textFieldStyle}
+      value={formData?.hire_date || ''}
+      onChange={(e) => handleDateChange('hire_date', e.target.value)}
+      InputLabelProps={{
+          shrink: true,
+        }}
+      InputProps={{
+        readOnly: isView,
+        startAdornment: (
+          <InputAdornment position="start">
+            <CalendarTodayIcon />
+          </InputAdornment>
+        )
+      }}
+    />
+  </Grid>
+
 </Grid>
 
   </DialogContent>
 
   <DialogActions sx={{ justifyContent: 'space-between', mt: 2 }}>
-    <Button onClick={onClose} color="secondary" variant="outlined">
+        <Button onClick={onClose} color="secondary" variant="outlined">
       Fermer
     </Button>
     {!isView && (
-      <Button onClick={onSave} variant="contained" color="primary">
+      <Button onClick={() => onSave(formData)} variant="contained" color="primary">
         Enregistrer
       </Button>
     )}

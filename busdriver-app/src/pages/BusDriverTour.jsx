@@ -1,4 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLoading } from "../context/LoadingContext";
+import { apiFetch } from "../services/apiAuth";
 import {
   Box,
   Paper,
@@ -16,6 +19,7 @@ import {
   CalendarToday,
   AccessTime
 } from "@mui/icons-material";
+import swal from '../utils/useSwal';
 
 const textFieldStyle = {
   '& .MuiInputBase-root': {
@@ -32,7 +36,95 @@ const textFieldStyle = {
   }
 };
 
-export default function TourForm({ formData = {}, handleChange, handleSubmit }) {
+export default function TourForm() {
+  const { showLoader, hideLoader } = useLoading();
+  const navigate = useNavigate();
+  const [busDrivers, setBusDrivers] = useState([]);
+  const [formData, setFormData] = useState({
+    bus_driver: '',
+    tour_date: '',
+    start_time: '',
+    arrival_time: '',
+    start_location: '',
+    destination: '',
+    status: 'scheduled',
+  });
+
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      showLoader();
+      try {
+        const response = await apiFetch('/busdrivers/');
+        if (response.ok) {
+          const data = await response.json();
+          setBusDrivers(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch bus drivers", error);
+      } finally {
+        hideLoader();
+      }
+    };
+    fetchDrivers();
+  }, [showLoader, hideLoader]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    showLoader();
+    try {
+      // Assurez-vous que bus_driver est bien un ID
+      const payload = {
+        ...formData,
+        bus_driver: parseInt(formData.bus_driver, 10),
+      };
+
+      const response = await apiFetch('/tours/', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        setFormData({
+          bus_driver: '',
+          tour_date: '',
+          start_time: '',
+          arrival_time: '',
+          start_location: '',
+          destination: '',
+          status: 'scheduled',
+        });
+        swal.fire({
+          icon: 'success',
+          title: 'Tournée ajoutée !',
+          text: 'La tournée a bien été enregistrée.',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          navigate('/BusDriverHistory');
+        });
+      } else {
+        const errorData = await response.json();
+        swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Impossible d\'ajouter la tournée.',
+          confirmButtonText: 'Fermer'
+        });
+      }
+    } catch (error) {
+      swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Une erreur est survenue lors de la création.',
+        confirmButtonText: 'Fermer'
+      });
+    } finally {
+      hideLoader();
+    }
+  };
+
 
   const [scrolled, setScrolled] = React.useState(false);
 const handleScroll = (e) => {
@@ -122,13 +214,13 @@ const boxRef = useRef(null);
       <Paper
         elevation={3}
         sx={{
+          border: '1px solid #e7f4ff',
+          borderRadius: '33px',
           padding: '45px',
-          width: "100%",
+         width: "100%",
           backgroundColor: "rgba(255,255,255,0.2)",
           backdropFilter: "blur(10px)",
-          border: '1px solid #e7f4ff',
           boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-          borderRadius: '33px',
         }}
       >
       <Box component="form" onSubmit={handleSubmit} sx={{ flexGrow: 1 }}>
@@ -144,8 +236,8 @@ const boxRef = useRef(null);
         fullWidth
         type="date"
         label="Date du tour"
-        name="date"
-        value={formData.date}
+        name="tour_date"
+        value={formData.tour_date}
         onChange={handleChange}
         margin="normal"
         sx={textFieldStyle}
@@ -165,8 +257,8 @@ const boxRef = useRef(null);
         fullWidth
         type="time"
         label="Heure de départ"
-        name="departureTime"
-        value={formData.departureTime}
+        name="start_time"
+        value={formData.start_time}
         onChange={handleChange}
         margin="normal"
         sx={textFieldStyle}
@@ -186,8 +278,8 @@ const boxRef = useRef(null);
         fullWidth
         type="time"
         label="Heure d’arrivée"
-        name="arrivalTime"
-        value={formData.arrivalTime}
+        name="arrival_time"
+        value={formData.arrival_time}
         onChange={handleChange}
         margin="normal"
         sx={textFieldStyle}
@@ -214,8 +306,8 @@ const boxRef = useRef(null);
       <TextField
         fullWidth
         label="Point de départ"
-        name="startLocation"
-        value={formData.startLocation}
+        name="start_location"
+        value={formData.start_location}
         onChange={handleChange}
         margin="normal"
         sx={textFieldStyle}
@@ -233,8 +325,8 @@ const boxRef = useRef(null);
       <TextField
         fullWidth
         label="Destination"
-        name="endLocation"
-        value={formData.endLocation}
+        name="destination"
+        value={formData.destination}
         onChange={handleChange}
         margin="normal"
         sx={textFieldStyle}
@@ -250,35 +342,11 @@ const boxRef = useRef(null);
       />
 
       <TextField
-        fullWidth
         select
-        label="Bus utilisé"
-        name="busId"
-        value={formData.busId}
-        onChange={handleChange}
-        margin="normal"
-        sx={textFieldStyle}
-        required
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <DirectionsBus />
-            </InputAdornment>
-          ),
-        }}
-        placeholder="Sélectionner un bus"
-      >
-        <MenuItem value="1">Bus 1</MenuItem>
-        <MenuItem value="2">Bus 2</MenuItem>
-        {/* Liste dynamique à venir */}
-      </TextField>
-
-      <TextField
         fullWidth
-        select
-        label="Chauffeur"
-        name="driverId"
-        value={formData.driverId}
+        label="Bus Driver"
+        name="bus_driver"
+        value={formData.bus_driver}
         onChange={handleChange}
         margin="normal"
         sx={textFieldStyle}
@@ -290,24 +358,21 @@ const boxRef = useRef(null);
             </InputAdornment>
           ),
         }}
-        placeholder="Sélectionner un chauffeur"
       >
-        <MenuItem value="101">John Doe</MenuItem>
-        <MenuItem value="102">Jane Smith</MenuItem>
-        {/* Liste dynamique à venir */}
+        {busDrivers.map((driver) => (
+          <MenuItem key={driver.id} value={driver.id}>
+            {driver.full_name}
+          </MenuItem>
+        ))}
       </TextField>
+    </Grid>
+    <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+      <Button type="submit" variant="contained" size="large">
+        Enregistrer la Tournée
+      </Button>
     </Grid>
   </Grid>
 </Box>
-
-
-
-        {/* Bouton */}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
-          <Button type="submit" variant="contained" size="large">
-            Enregistrer
-          </Button>
-        </Box>
       </Paper>
     </Box>
   );

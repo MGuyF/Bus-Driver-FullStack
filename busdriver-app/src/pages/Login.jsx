@@ -29,17 +29,28 @@ const LoginPage = () => {
   const navigate = useNavigate(); // Permet de rediriger après connexion
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");       // Retirer l’erreur précédente
-    setLoading(true);   // Activer le spinner
-    if (login(email, password)) {
-      navigate("/AddBusDriver"); // Rediriger vers la page Dashboard après connexion
-    } else {
-      setError("Email ou mot de passe incorrect.");
-      setLoading(false); // Arrêter le spinner
+    setError("");
+    if (!email || !password) {
+      setError("Veuillez remplir tous les champs.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const success = await login(email, password);
+      if (success) {
+        navigate("/AddBusDriver");
+      } else {
+        setError("Email ou mot de passe incorrect.");
+        setLoading(false);
+      }
+    } catch (err) {
+      setError("Erreur réseau ou serveur. Veuillez réessayer.");
+      setLoading(false);
     }
   };
+
 
   return (
     <PageContainer>
@@ -62,38 +73,18 @@ const LoginPage = () => {
           <Logo width={180} />
         </Box>
 
-        {/* Message d'erreur */}
-        {error && (
-          <Box
-            className="invalid"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: '#ffe6e6',
-              color: '#b00020',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              mb: '22px',
-              mt: '-10px'
-            }}
-          >
-            <ErrorOutline sx={{ mr: 1 }} />
-            <Typography variant="body2">{error}</Typography>
-          </Box>
-        )}
-
-        {/* Formulaire */}
         <form onSubmit={handleSubmit}>
-          {/* Email */}
           <TextField
-            label="Email"
-            placeholder="exemple@domaine.com"
-            variant="outlined"
+            margin="normal"
+            required
             fullWidth
-            type="email"
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2, fontSize: '14px'}}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -102,17 +93,17 @@ const LoginPage = () => {
               ),
             }}
           />
-
-          {/* Mot de passe */}
           <TextField
-            label="Mot de passe"
-            placeholder="Entrez votre mot de passe"
-            variant="outlined"
+            margin="normal"
+            required
             fullWidth
-            type={showPwd ? 'text' : 'password'}
+            name="password"
+            label="Mot de passe"
+            type={showPwd ? "text" : "password"}
+            id="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 3, fontSize: '14px'}}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -121,7 +112,11 @@ const LoginPage = () => {
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPwd(!showPwd)} edge="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPwd((show) => !show)}
+                    edge="end"
+                  >
                     {showPwd ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
@@ -129,12 +124,18 @@ const LoginPage = () => {
             }}
           />
 
-          {/* Bouton */}
-          <Button
+        {error && (
+          <Box sx={{ color: 'red', mt: 1, mb: 1, display: 'flex', alignItems: 'center', backgroundColor: '#ffe6e6', padding: '10px 16px', borderRadius: '8px' }}>
+            <ErrorOutline sx={{ mr: 1 }} />
+            <Typography variant="body2">{error}</Typography>
+          </Box>
+        )}
+
+        <Button
+            type="submit"
+            fullWidth
             variant="contained"
             color="primary"
-            fullWidth
-            type="submit"
             disabled={loading}
             sx={{ position: 'relative', height: 45 }}
           >
@@ -155,7 +156,7 @@ const LoginPage = () => {
         </form>
       </Card>
     </Grid>
-    </PageContainer>
+  </PageContainer>
   );
 };
 

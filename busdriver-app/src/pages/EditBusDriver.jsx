@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useLoading } from "../context/LoadingContext";
+import { apiFetch } from "../services/apiAuth";
 import { Box, Paper, TextField, Button } from "@mui/material";
 import { MenuItem } from '@mui/material';
 
 const EditBusDriver = () => {
-  const { id } = useParams(); // Récupère l'ID du bus driver depuis l'URL
+  const { id } = useParams();
   const [busDriver, setBusDriver] = useState(null);
+  const { showLoader, hideLoader } = useLoading();
+  const navigate = useNavigate();
 
-  // Récupérer les données du bus driver depuis le localStorage
   useEffect(() => {
-    const savedBusDrivers = JSON.parse(localStorage.getItem("busDrivers")) || [];
-    const driver = savedBusDrivers.find((d) => d.id === parseInt(id));
-
-    if (driver) {
-      setBusDriver(driver);
-    }
-  }, [id]);
+    const fetchDriver = async () => {
+      showLoader();
+      try {
+        const response = await apiFetch(`/busdrivers/${id}/`);
+        if (response.ok) {
+          const data = await response.json();
+          setBusDriver(data);
+        } else {
+          alert("Chauffeur non trouvé.");
+          navigate("/bus-driver-list");
+        }
+      } catch (error) {
+        alert("Une erreur réseau est survenue.");
+      } finally {
+        hideLoader();
+      }
+    };
+    fetchDriver();
+  }, [id, navigate, showLoader, hideLoader]);
 
   // Mettre à jour les champs du formulaire
   const handleChange = (e) => {
@@ -26,17 +41,26 @@ const EditBusDriver = () => {
     }));
   };
 
-  // Sauvegarder les modifications dans le localStorage
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const savedBusDrivers = JSON.parse(localStorage.getItem("busDrivers")) || [];
-    const updatedDrivers = savedBusDrivers.map((driver) =>
-      driver.id === parseInt(id) ? busDriver : driver
-    );
-
-    localStorage.setItem("busDrivers", JSON.stringify(updatedDrivers));
-    alert("Modifications enregistrées !");
+    showLoader();
+    try {
+      const response = await apiFetch(`/busdrivers/${id}/`, {
+        method: "PUT",
+        body: JSON.stringify(busDriver),
+      });
+      if (response.ok) {
+        alert("Modifications enregistrées !");
+        navigate("/bus-driver-list");
+      } else {
+        const errorData = await response.json();
+        alert(`Erreur: ${JSON.stringify(errorData)}`);
+      }
+    } catch (error) {
+      alert("Une erreur réseau est survenue.");
+    } finally {
+      hideLoader();
+    }
   };
 
   // Vérification si les données existent avant d'afficher le formulaire
