@@ -15,41 +15,15 @@ class TourSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import serializers
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = 'email'
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
 
-    def validate(self, attrs):
-        # We expect 'email' and 'password' in the request data
-        email = attrs.get('email')
-        password = attrs.get('password')
+        # Add custom claims to the token
+        token['username'] = user.username
+        token['email'] = user.email
 
-        if email and password:
-            # We use Django's authenticate function. 
-            # This will call your EmailOrUsernameBackend behind the scenes.
-            user = authenticate(request=self.context.get('request'),
-                                username=email, password=password)
-
-            if not user:
-                raise serializers.ValidationError('No active account found with the given credentials')
-
-            # If authentication is successful, we generate the tokens
-            refresh = self.get_token(user)
-
-            data = {}
-            data['refresh'] = str(refresh)
-            data['access'] = str(refresh.access_token)
-
-            # You can add extra data here if you want
-            data['user'] = {
-                'id': user.id,
-                'email': user.email,
-                'username': user.username
-            }
-
-            return data
-        else:
-            raise serializers.ValidationError('Must include "email" and "password".')
+        return token
