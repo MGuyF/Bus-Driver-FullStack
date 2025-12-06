@@ -5,4 +5,3 @@ psycopg2-binary
 whitenoise
 django-cors-headers
 djangorestframework-simplejwt
-dj-database-url
