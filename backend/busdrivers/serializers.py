@@ -15,25 +15,41 @@ class TourSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-
-        # Add custom claims
-        token['username'] = user.username
-        # ...
-
-        return token
+    username_field = 'email'
 
     def validate(self, attrs):
-        # This will use your custom backend to authenticate with email or username
-        data = super().validate(attrs)
+        # We expect 'email' and 'password' in the request data
+        email = attrs.get('email')
+        password = attrs.get('password')
 
-        # Add custom data to the response if needed
-        refresh = self.get_token(self.user)
-        data['refresh'] = str(refresh)
-        data['access'] = str(refresh.access_token)
-        data['username'] = self.user.username
+        if email and password:
+            # We use Django's authenticate function. 
+            # This will call your EmailOrUsernameBackend behind the scenes.
+            user = authenticate(request=self.context.get('request'),
+                                username=email, password=password)
 
-        return data
+            if not user:
+                raise serializers.ValidationError('No active account found with the given credentials')
+
+            # If authentication is successful, we generate the tokens
+            refresh = self.get_token(user)
+
+            data = {}
+            data['refresh'] = str(refresh)
+            data['access'] = str(refresh.access_token)
+
+            # You can add extra data here if you want
+            data['user'] = {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username
+            }
+
+            return data
+        else:
+            raise serializers.ValidationError('Must include "email" and "password".')
