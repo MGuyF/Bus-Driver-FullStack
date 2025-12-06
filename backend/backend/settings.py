@@ -23,8 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-tajyq^amq%6(!i^c%la(_t-tt3#*zwl!#w-u-)g-*xjh5*7v#)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# TEMPORARY: Forcing DEBUG mode to get detailed error messages from production
-DEBUG = True
+# Set DEBUG = True only for development/debugging
+# The value is read from an environment variable for flexibility
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['bus-driver-fullstack.onrender.com', 'localhost', '127.0.0.1']
 
