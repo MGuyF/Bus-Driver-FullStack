@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-tajyq^amq%6(!i^c%la(_t-tt3#*zwl!#w-u-)g-*xjh5*7v#)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# TEMPORARY: Forcing DEBUG mode to get detailed error messages from production
+DEBUG = True
 
 ALLOWED_HOSTS = ['bus-driver-fullstack.onrender.com', 'localhost', '127.0.0.1']
 
