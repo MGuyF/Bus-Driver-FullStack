@@ -6,6 +6,8 @@ from .serializers import BusDriverSerializer, TourSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyTokenObtainPairSerializer
 
 class BusDriverViewSet(viewsets.ModelViewSet):
     queryset = BusDriver.objects.all()
@@ -20,6 +22,9 @@ class TourViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['bus_driver__full_name', 'start_time', 'start_location', 'destination', 'status']
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class CustomLoginView(APIView):
     def post(self, request):
