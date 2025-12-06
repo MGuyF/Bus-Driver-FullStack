@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -108,7 +108,12 @@ REST_FRAMEWORK = {
 }
 
 # CORS settings pour autoriser le front React
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://bus-driver-full-stack.vercel.app',
+    'http://localhost:3000',
+]
+# Si vous utilisez des cookies ou des sessions cross-domain, vous pourriez avoir besoin de ça :
+# CORS_ALLOW_CREDENTIALS = True
 
 # Backend d'authentification personnalisé pour login par email
 AUTHENTICATION_BACKENDS = [
