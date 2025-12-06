@@ -1,5 +1,5 @@
 // Service d'authentification JWT pour React
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 // Login: récupère access et refresh tokens
 export async function login(username, password) {
@@ -55,4 +55,11 @@ export async function apiFetch(url, options = {}) {
     }
   }
   return response;
+}
+
+// Vérifie si l'utilisateur est authentifié
+export function isAuthenticated() {
+  const token = localStorage.getItem('access');
+  // Pour une version plus robuste, on pourrait décoder le JWT et vérifier sa date d'expiration
+  return !!token;
 }

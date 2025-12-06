@@ -9,7 +9,7 @@ venv/
 db.sqlite3
 
 # Environment variables
-.env
+backend/.env
 
 # IDE files
 .idea/

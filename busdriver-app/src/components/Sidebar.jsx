@@ -16,7 +16,7 @@ import {
   ListAlt
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { logout } from "../services/authService";
+import { logout } from "../services/apiAuth";
 
 const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   const location = useLocation();

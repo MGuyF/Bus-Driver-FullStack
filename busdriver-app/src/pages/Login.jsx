@@ -15,7 +15,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { login } from "../services/authService"; // Importer la fonction d'authentification
+import { login } from "../services/apiAuth"; // Importer la fonction d'authentification
 import Logo from "../components/Logo";
 import "../assets/css/Index.css";
 import PageContainer from "../components/PageContainer";
