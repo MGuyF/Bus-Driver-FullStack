@@ -198,7 +198,6 @@ const boxRef = useRef(null);
       onScroll={handleScroll}
         sx={{
           display: "block",
-          height: '75.5vh',
           overflowY: hasOverflow ? 'auto' : 'visible',
           boxShadow: scrolled ? 'inset 0 10px 10px -10px rgba(0,0,0,0.2)' : 'none',
           paddingTop: hasOverflow ? '14px' : 0,

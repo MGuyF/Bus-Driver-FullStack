@@ -243,7 +243,7 @@ export default function StyledDataGrid() {
           elevation={3}
           sx={{
             padding: '45px',
-            width: '85.5vw',
+            width: '100%',
             backgroundColor: 'rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             border: '1px solid #e7f4ff',

@@ -130,7 +130,6 @@ export default function TourHistory() {
             display: 'flex',
             alignItems: 'center',
             position: 'absolute',
-            marginLeft: '15px',
             marginTop: '-46px',
           }}
         >
@@ -152,7 +151,7 @@ export default function TourHistory() {
           elevation={3}
           sx={{
             padding: '45px',
-            width: '85.5vw',
+            width: '100%',
             backgroundColor: 'rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             border: '1px solid #e7f4ff',
