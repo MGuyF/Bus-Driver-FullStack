@@ -18,11 +18,11 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../services/apiAuth";
 
-const Sidebar = ({ mobileOpen, setMobileOpen }) => {
+const Sidebar = ({ mobileOpen, setMobileOpen, mobileClock, isVisible }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isMobile = useMediaQuery('(max-height: 676px)');
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const handleLogout = () => {
     logout();
@@ -138,11 +138,22 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
               }
             }}
           >
+            {mobileClock && <Box sx={{ p: 2, textAlign: 'center' }}>{mobileClock}</Box>}
             {mobileListItems}
           </Drawer>
         </>
       ) : (
-        <Box sx={{ flexShrink: 0, mr: 3, width: '82px', position: 'sticky', top: '230px' }}>
+        <Box sx={{
+          flexShrink: 0,
+          position: 'sticky',
+          top: '230px',
+          transition: 'opacity 0.3s, transform 0.3s, width 0.3s, margin-right 0.3s',
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'translateX(0)' : 'translateX(-82px)',
+          pointerEvents: isVisible ? 'auto' : 'none',
+          width: isVisible ? '82px' : '0px',
+          mr: isVisible ? 3 : 0,
+        }}>
         <Paper
           sx={{
             width: 88,
