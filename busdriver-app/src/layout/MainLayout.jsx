@@ -83,12 +83,12 @@ const MainLayout = () => {
       <Box sx={{ width: '100%', padding: '30px', paddingBottom: '0px' }}>
         {/* Logo en haut à gauche */}
         <Box sx={{
-          width: '100%',
+          width: 'calc(100% - 70px)',
           display: "flex",
           justifyContent: "space-between",
           alignItems: 'center',
           mb: 3,
-          position: 'sticky',
+          position: 'fixed',
           top: '30px',
           zIndex: 999,
           transition: 'padding 0.3s, background-color 0.3s, box-shadow 0.3s',
@@ -98,8 +98,9 @@ const MainLayout = () => {
             boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
             padding: '30px 20px',
             borderRadius: '22px',
+            marginLeft: 1,
             top: '20px',
-            width: '100%',
+            width: 'calc(100% - 70px)',
             left: '20px',
           }),
         }}>

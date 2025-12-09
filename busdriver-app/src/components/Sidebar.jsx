@@ -124,24 +124,22 @@ const Sidebar = ({ mobileOpen, setMobileOpen, mobileClock, isVisible }) => {
   return (
     <>
       {isMobile ? (
-        <>
-          <Drawer
-            anchor="right"
-            open={mobileOpen}
-            onClose={() => setMobileOpen(false)}
-            PaperProps={{
-              sx: {
-                width: 240,
-                p: 2,
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(10px)',
-              }
-            }}
-          >
-            {mobileClock && <Box sx={{ p: 2, textAlign: 'center' }}>{mobileClock}</Box>}
-            {mobileListItems}
-          </Drawer>
-        </>
+        <Drawer
+          anchor="right"
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          PaperProps={{
+            sx: {
+              width: 240,
+              p: 2,
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+            }
+          }}
+        >
+          {mobileClock && <Box sx={{ p: 2, textAlign: 'center' }}>{mobileClock}</Box>}
+          {mobileListItems}
+        </Drawer>
       ) : (
         <Box sx={{
           flexShrink: 0,
@@ -154,25 +152,25 @@ const Sidebar = ({ mobileOpen, setMobileOpen, mobileClock, isVisible }) => {
           width: isVisible ? '82px' : '0px',
           mr: isVisible ? 3 : 0,
         }}>
-        <Paper
-          sx={{
-            width: 88,
-            height: 500,
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            border: '1px solid #e7f4ff',
-            borderRadius: 50,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 3,
-          }}
-          elevation={0}
-        >
-          {desktopListItems}
-        </Paper>
+          <Paper
+            sx={{
+              width: 88,
+              height: 500,
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid #e7f4ff',
+              borderRadius: 50,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 3,
+            }}
+            elevation={0}
+          >
+            {desktopListItems}
+          </Paper>
         </Box>
       )}
     </>

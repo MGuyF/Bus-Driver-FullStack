@@ -111,8 +111,9 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
 
   <DialogContent>
   <Grid container spacing={2} mt={1}>
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
+      autoFocus={!isView}
       label="Nom complet"
       fullWidth
       sx={textFieldStyle}
@@ -130,7 +131,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Téléphone"
       fullWidth
@@ -149,7 +150,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Email"
       fullWidth
@@ -168,7 +169,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Adresse"
       fullWidth
@@ -187,7 +188,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Date de naissance"
       fullWidth
@@ -206,7 +207,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Bus"
       fullWidth
@@ -225,7 +226,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Numéro de permis"
       name="license_number"
@@ -244,7 +245,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Expiration du permis"
       name="license_expiry"
@@ -267,7 +268,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Société"
       name="company_name"
@@ -286,7 +287,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-    <Grid item xs={6}>
+    <Grid item xs={12} sm={6}>
     <TextField
       label="Type de bus"
       name="bus_type"
@@ -305,7 +306,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Années d'expérience"
       name="experience_years"
@@ -325,7 +326,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
     />
   </Grid>
 
-  <Grid item xs={6}>
+  <Grid item xs={12} sm={6}>
     <TextField
       label="Date d'embauche"
       name="hire_date"
@@ -353,7 +354,7 @@ export default function BusDriverModal({ open, onClose, data, mode, onSave }) {
   </DialogContent>
 
   <DialogActions sx={{ justifyContent: 'space-between', mt: 2 }}>
-        <Button onClick={onClose} color="secondary" variant="outlined">
+        <Button onClick={onClose} color="secondary" variant="outlined" autoFocus={isView}>
       Fermer
     </Button>
     {!isView && (
