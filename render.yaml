@@ -2,7 +2,7 @@ services:
   - type: web
     name: busdriver-api
     env: python
-    buildCommand: "pip install -r backend/requirements.txt && python backend/manage.py migrate"
+    buildCommand: "pip install -r backend/requirements.txt && python backend/manage.py migrate && python backend/manage.py createcachetable && python backend/manage.py create_superuser_if_not_exists && python backend/manage.py seed_demo_user"
     startCommand: "gunicorn --chdir backend backend.wsgi:application --bind 0.0.0.0:$PORT"
     plan: free
     envVars:
