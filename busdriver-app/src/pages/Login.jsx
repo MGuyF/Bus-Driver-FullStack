@@ -90,7 +90,7 @@ const LoginPage = () => {
             <strong>Email :</strong> demo@busdriver.com
           </Typography>
           <Typography variant="body2" component="div" align="left">
-            <strong>Mot de passe :</strong> demopassword
+            <strong>Mot de passe :</strong> Demo123456&78
           </Typography>
         </Box>
 
