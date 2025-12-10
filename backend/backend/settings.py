@@ -163,6 +163,14 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+# Cache Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'busdriver_cache_table',
+    }
+}
+
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'

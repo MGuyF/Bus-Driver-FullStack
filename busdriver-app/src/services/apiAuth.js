@@ -1,19 +1,45 @@
 // Service d'authentification JWT pour React
+import axios from 'axios';
+
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
+const apiClient = axios.create({
+  baseURL: API_URL,
+  timeout: 30000, // 30 secondes de timeout pour gérer les cold starts
+});
+
 // Login: récupère access et refresh tokens
-export async function login(username, password) {
-  const response = await fetch(`${API_URL}/auth/login/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
-  if (!response.ok) throw new Error('Login failed');
-  const data = await response.json();
-  localStorage.setItem('access', data.access);
-  localStorage.setItem('refresh', data.refresh);
-  return data;
-}
+export const login = async (email, password) => {
+  try {
+    const response = await apiClient.post('/auth/login/', {
+      username: email, // Le backend attend 'username'
+      password: password,
+    });
+
+    // Si la requête réussit (status 2xx), on sauvegarde les tokens
+    if (response.data.access) {
+      localStorage.setItem('access', response.data.access);
+      localStorage.setItem('refresh', response.data.refresh);
+      return true; // Succès
+    }
+    return false; // Cas improbable où la requête réussit mais sans token
+
+  } catch (error) {
+    // Gère le timeout (démarrage à froid)
+    if (error.code === 'ECONNABORTED') {
+      throw new Error("Le serveur met du temps à démarrer. Veuillez réessayer dans quelques instants.");
+    }
+
+    // Gère les erreurs de login (401 - Unauthorized, etc.)
+    if (error.response) {
+      console.error('Login error:', error.response.data);
+      return false; // Échec de l'authentification
+    }
+
+    // Gère les autres erreurs (réseau, etc.)
+    throw new Error("Erreur réseau ou serveur. Veuillez réessayer.");
+  }
+};
 
 // Logout: supprime les tokens
 export function logout() {

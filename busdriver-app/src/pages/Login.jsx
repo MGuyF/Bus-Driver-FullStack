@@ -47,7 +47,7 @@ const LoginPage = () => {
         setLoading(false);
       }
     } catch (err) {
-      setError("Erreur réseau ou serveur. Veuillez réessayer.");
+      setError(err.message || "Erreur réseau ou serveur. Veuillez réessayer.");
       setLoading(false);
     }
   };
