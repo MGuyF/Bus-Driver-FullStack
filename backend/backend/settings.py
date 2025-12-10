@@ -171,6 +171,17 @@ CACHES = {
     }
 }
 
+# Django-Q Configuration
+Q_CLUSTER = {
+    'name': 'busdriver-q',
+    'workers': 2,
+    'timeout': 90,  # Allow tasks to run for 90 seconds
+    'retry': 120, # Retry failed tasks after 120 seconds
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+}
+
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
