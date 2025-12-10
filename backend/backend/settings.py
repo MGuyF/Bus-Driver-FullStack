@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-tajyq^amq%6(!i^c%la(_t-tt3#*zwl!#w-u-)g-*xjh5*7v#)
 # SECURITY WARNING: don't run with debug turned on in production!
 # Set DEBUG = True only for development/debugging
 # The value is read from an environment variable for flexibility
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = ['bus-driver-fullstack.onrender.com', 'localhost', '127.0.0.1']
 
@@ -123,6 +123,37 @@ CORS_ALLOWED_ORIGINS = [
 ]
 # Si vous utilisez des cookies ou des sessions cross-domain, vous pourriez avoir besoin de ça :
 # CORS_ALLOW_CREDENTIALS = True
+
+# Configuration de la journalisation détaillée pour le débogage
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'busdrivers': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
 
 # Backend d'authentification personnalisé pour login par email
 AUTHENTICATION_BACKENDS = [
