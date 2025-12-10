@@ -8,7 +8,8 @@ import {
   InputAdornment,
   Typography,
   Button,
-  IconButton
+  IconButton,
+  Divider
 } from '@mui/material';
 import { ErrorOutline, InfoOutlined } from '@mui/icons-material';
 import EmailIcon from '@mui/icons-material/Email';
@@ -55,8 +56,9 @@ const LoginPage = () => {
   return (
     <PageContainer>
       <Grid container justifyContent="center" alignItems="center" sx={{ padding: '1rem', height: '100vh' }}>
-      <Card
-        elevation={4}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', gap: 2 }}>
+        <Card
+          elevation={4}
         sx={{
           padding: '45px',
           width: 490,
@@ -155,34 +157,33 @@ const LoginPage = () => {
           </Button>
         </form>
 
-        <Box 
-          sx={{ 
-            mt: 3,
-            p: 2,
+        </Card>
+
+        <Box
+          sx={{
+            p: 1.5,
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            backgroundColor: 'rgba(231, 244, 255, 0.5)',
+            gap: 0.5,
+            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+            backdropFilter: 'blur(10px)',
             borderRadius: '12px',
-            color: '#5a6470'
+            border: '1px solid #e7f4ff',
+            color: 'text.secondary',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <InfoOutlined sx={{ mr: 1, fontSize: '1.2rem', color: '#007bff' }} />
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-              Accès Démo
-            </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <InfoOutlined sx={{ mr: 1, fontSize: '1rem', color: '#007bff' }} />
+            <Typography variant="caption" sx={{ fontWeight: 'bold' }}>Accès Démo</Typography>
           </Box>
-          <Box sx={{ textAlign: 'left', width: '100%', pl: 2 }}>
-            <Typography variant="body2">
-              <strong>E-mail :</strong> demo@busdriver.com
-            </Typography>
-            <Typography variant="body2">
-              <strong>Mot de passe :</strong> Demo123456&78
-            </Typography>
+          <Divider sx={{ width: '100%', my: 0.5 }} />
+          <Box sx={{ width: '100%', pl: 1 }}>
+            <Typography variant="caption"><strong>E-mail:</strong> demo@busdriver.com</Typography>
+            <Typography variant="caption"><strong>Mot de passe:</strong> Demo123456&78</Typography>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </Grid>
   </PageContainer>
   );
