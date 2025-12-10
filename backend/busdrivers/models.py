@@ -1,6 +1,6 @@
 from django.db import models
-
-from django.db import models
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 class Tour(models.Model):
     STATUS_CHOICES = [
@@ -34,6 +34,8 @@ class BusDriver(models.Model):
     bus_type = models.CharField(max_length=50)
     experience_years = models.PositiveIntegerField()
     hire_date = models.DateField()
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.full_name} ({self.bus_number})"

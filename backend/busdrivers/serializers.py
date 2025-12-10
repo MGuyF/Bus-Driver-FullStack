@@ -6,6 +6,7 @@ class BusDriverSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusDriver
         fields = '__all__'
+        read_only_fields = ('created_by',)
 
 class TourSerializer(serializers.ModelSerializer):
     bus_driver_name = serializers.CharField(source='bus_driver.full_name', read_only=True)

@@ -16,6 +16,9 @@ class BusDriverViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['full_name', 'email', 'phone', 'address', 'bus_number', 'company_name']
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
 class TourViewSet(viewsets.ModelViewSet):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
