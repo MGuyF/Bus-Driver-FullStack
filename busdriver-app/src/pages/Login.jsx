@@ -56,12 +56,12 @@ const LoginPage = () => {
   return (
     <PageContainer>
       <Grid container justifyContent="center" alignItems="center" sx={{ padding: '1rem', height: '100vh' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, width: '100%', maxWidth: 490, px: 2 }}>
         <Card
           elevation={4}
         sx={{
-          padding: '45px',
-          width: 490,
+          padding: { xs: '30px', md: '45px' },
+          width: '100%',
           border: '1px solid #e7f4ff',
           backgroundColor: 'rgba(255, 255, 255, 0.2)',
           backdropFilter: 'blur(10px)',
@@ -156,12 +156,11 @@ const LoginPage = () => {
             {!loading && 'Se connecter'}
           </Button>
         </form>
-
         </Card>
 
         <Box
           sx={{
-            p: 1.5,
+            p: 2,
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
