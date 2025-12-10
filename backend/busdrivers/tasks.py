@@ -2,9 +2,10 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 from .models import BusDriver
+from django_q.tasks import async_task
 
-def cleanup_demo_data():
-    """Deletes BusDriver records created by the demo user older than 30 minutes."""
+def run_cleanup():
+    """The actual cleanup logic."""
     User = get_user_model()
     demo_username = 'demo@busdriver.com'
 
@@ -27,3 +28,7 @@ def cleanup_demo_data():
         print(f"Successfully deleted {count} old demo record(s).")
     else:
         print('No old demo records to delete.')
+
+def schedule_cleanup():
+    """Schedules the cleanup task to run asynchronously."""
+    async_task('busdrivers.tasks.run_cleanup')
