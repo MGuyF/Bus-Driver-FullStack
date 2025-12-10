@@ -10,7 +10,7 @@ import {
   Button,
   IconButton
 } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
+import { ErrorOutline, InfoOutlined } from '@mui/icons-material';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
@@ -71,27 +71,6 @@ const LoginPage = () => {
         {/* Logo */}
         <Box sx={{ mb: '30px' }}>
           <Logo width={180} />
-        </Box>
-
-        <Box 
-          sx={{ 
-            my: 2,
-            p: 2,
-            border: '1px dashed #007bff',
-            borderRadius: '8px',
-            backgroundColor: '#e7f4ff',
-            textAlign: 'center'
-          }}
-        >
-          <Typography variant="h6" gutterBottom sx={{fontWeight: 'bold'}}>
-            Accès Démo
-          </Typography>
-          <Typography variant="body2" component="div" align="left">
-            <strong>Email :</strong> demo@busdriver.com
-          </Typography>
-          <Typography variant="body2" component="div" align="left">
-            <strong>Mot de passe :</strong> Demo123456&78
-          </Typography>
         </Box>
 
         <form onSubmit={handleSubmit}>
@@ -175,6 +154,24 @@ const LoginPage = () => {
             {!loading && 'Se connecter'}
           </Button>
         </form>
+
+        <Box 
+          sx={{ 
+            mt: 3, // Marge en haut pour espacer du bouton
+            p: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(231, 244, 255, 0.5)', // Fond très subtil
+            borderRadius: '12px',
+            color: '#5a6470' // Couleur de texte douce
+          }}
+        >
+          <InfoOutlined sx={{ mr: 1.5, fontSize: '1.2rem', color: '#007bff' }} />
+          <Typography variant="body2">
+            Pour la démo : <strong>demo@busdriver.com</strong> / <strong>Demo123456&78</strong>
+          </Typography>
+        </Box>
       </Card>
     </Grid>
   </PageContainer>
