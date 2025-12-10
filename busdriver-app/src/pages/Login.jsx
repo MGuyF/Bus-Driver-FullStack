@@ -157,20 +157,30 @@ const LoginPage = () => {
 
         <Box 
           sx={{ 
-            mt: 3, // Marge en haut pour espacer du bouton
-            p: 1.5,
+            mt: 3,
+            p: 2,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(231, 244, 255, 0.5)', // Fond très subtil
+            backgroundColor: 'rgba(231, 244, 255, 0.5)',
             borderRadius: '12px',
-            color: '#5a6470' // Couleur de texte douce
+            color: '#5a6470'
           }}
         >
-          <InfoOutlined sx={{ mr: 1.5, fontSize: '1.2rem', color: '#007bff' }} />
-          <Typography variant="body2">
-            Pour la démo : <strong>demo@busdriver.com</strong> / <strong>Demo123456&78</strong>
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <InfoOutlined sx={{ mr: 1, fontSize: '1.2rem', color: '#007bff' }} />
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              Accès Démo
+            </Typography>
+          </Box>
+          <Box sx={{ textAlign: 'left', width: '100%', pl: 2 }}>
+            <Typography variant="body2">
+              <strong>E-mail :</strong> demo@busdriver.com
+            </Typography>
+            <Typography variant="body2">
+              <strong>Mot de passe :</strong> Demo123456&78
+            </Typography>
+          </Box>
         </Box>
       </Card>
     </Grid>
