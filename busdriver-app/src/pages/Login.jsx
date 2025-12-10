@@ -73,6 +73,27 @@ const LoginPage = () => {
           <Logo width={180} />
         </Box>
 
+        <Box 
+          sx={{ 
+            my: 2,
+            p: 2,
+            border: '1px dashed #007bff',
+            borderRadius: '8px',
+            backgroundColor: '#e7f4ff',
+            textAlign: 'center'
+          }}
+        >
+          <Typography variant="h6" gutterBottom sx={{fontWeight: 'bold'}}>
+            Accès Démo
+          </Typography>
+          <Typography variant="body2" component="div" align="left">
+            <strong>Email :</strong> demo@busdriver.com
+          </Typography>
+          <Typography variant="body2" component="div" align="left">
+            <strong>Mot de passe :</strong> demopassword
+          </Typography>
+        </Box>
+
         <form onSubmit={handleSubmit}>
           <TextField
             margin="normal"
