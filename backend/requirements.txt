@@ -7,3 +7,4 @@ django-cors-headers
 djangorestframework-simplejwt
 dj-database-url==3.0.1
 django-q2
+python-dotenv
