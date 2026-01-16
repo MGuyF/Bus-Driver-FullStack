@@ -8,10 +8,9 @@ import {
   InputAdornment,
   Typography,
   Button,
-  IconButton,
-  Divider
+  IconButton
 } from '@mui/material';
-import { ErrorOutline, InfoOutlined } from '@mui/icons-material';
+import { ErrorOutline } from '@mui/icons-material';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
@@ -164,23 +163,41 @@ const LoginPage = () => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            gap: 0.5,
-            backgroundColor: 'rgba(255, 255, 255, 0.4)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '12px',
-            border: '1px solid #e7f4ff',
-            color: 'text.secondary',
+            alignItems: 'center',
+            gap: 1.5,
+            background: 'linear-gradient(90deg, #d8dcea 0%, #f8fafc 100%)',
+            borderRadius: '18px',
+            border: '1.5px solid #e7f4ff',
+            boxShadow: '0 2px 12px 0 rgba(0,0,0,0.06)',
+            mt: 2,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <InfoOutlined sx={{ mr: 1, fontSize: '1rem', color: '#007bff' }} />
-            <Typography variant="caption" sx={{ fontWeight: 'bold' }}>Accès Démo</Typography>
-          </Box>
-          <Divider sx={{ width: '100%', my: 0.5 }} />
-          <Box sx={{ width: '100%', pl: 1 }}>
-            <Typography variant="caption"><strong>E-mail:</strong> demo@busdriver.com</Typography>
-            <Typography variant="caption"><strong>Mot de passe:</strong> Demo123456&78</Typography>
-          </Box>
+          <Typography variant="body2" sx={{ color: '#333', fontWeight: 500, mb: 0.5 }}>
+            Pas encore de compte ?
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => navigate('/register')}
+            sx={{
+              borderRadius: '999px',
+              px: 4,
+              py: 1.2,
+              fontWeight: 600,
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px 0 rgba(0,123,255,0.07)',
+              background: 'white',
+              textTransform: 'none',
+              transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+              '&:hover': {
+                background: 'linear-gradient(90deg, #e0e7ff 0%, #f8fafc 100%)',
+                borderColor: '#007bff',
+                color: '#007bff',
+              },
+            }}
+          >
+            Créer un compte
+          </Button>
         </Box>
       </Box>
     </Grid>

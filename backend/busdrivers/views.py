@@ -1,13 +1,11 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets, status, filters
 from .models import BusDriver, Tour
-from .serializers import BusDriverSerializer, TourSerializer
+from .serializers import BusDriverSerializer, TourSerializer, UserRegistrationSerializer, MyTokenObtainPairSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import MyTokenObtainPairSerializer
+from django.contrib.auth import get_user_model
 
 class BusDriverViewSet(viewsets.ModelViewSet):
     queryset = BusDriver.objects.all()
@@ -28,6 +26,15 @@ class TourViewSet(viewsets.ModelViewSet):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+class RegistrationView(APIView):
+    permission_classes = []
+    def post(self, request):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'detail': 'Utilisateur créé avec succès.'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomLoginView(APIView):
     def post(self, request):

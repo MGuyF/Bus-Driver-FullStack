@@ -7,13 +7,14 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from .views import BusDriverViewSet, TourViewSet, CustomLoginView, MyTokenObtainPairView
+from .views import BusDriverViewSet, TourViewSet, CustomLoginView, MyTokenObtainPairView, RegistrationView
 
 router = DefaultRouter()
 router.register(r'busdrivers', BusDriverViewSet)
 router.register(r'tours', TourViewSet)
 
 urlpatterns = [
+    path('auth/register/', RegistrationView.as_view(), name='register'),
     path('auth/custom-login/', CustomLoginView.as_view(), name='custom_login'),
     path('auth/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

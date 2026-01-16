@@ -8,6 +8,23 @@ const apiClient = axios.create({
   timeout: 30000, // 30 secondes de timeout pour gérer les cold starts
 });
 
+// Register: crée un nouvel utilisateur
+export const register = async (name, email, password) => {
+  try {
+    const response = await apiClient.post('/auth/register/', {
+      name,
+      email,
+      password
+    });
+    return { success: true, data: response.data };
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return { success: false, error: error.response.data };
+    }
+    return { success: false, error: { detail: 'Erreur réseau ou serveur.' } };
+  }
+};
+
 // Login: récupère access et refresh tokens
 export const login = async (email, password) => {
   try {

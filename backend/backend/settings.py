@@ -89,7 +89,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # This will be automatically set by Render in production.
 database_url = os.environ.get('DATABASE_URL')
 
-if database_url:
+# Force SQLite on Render deployment
+if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+# Else use DATABASE_URL if provided (local/dev/prod non-Render)
+elif database_url:
     DATABASES = {
         'default': dj_database_url.config(
             default=database_url,

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "../pages/Login";
+import Register from "../pages/Register";
 import MainLayout from "../layout/MainLayout";
 import BusDriverForm from "../pages/AddBusDriver";
 import BusDriversList from "../pages/BusDriverList";
@@ -13,6 +14,7 @@ const AppRoutes = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<LoginPage />} />
+<Route path="/register" element={<Register />} />
                 <Route element={<RequireAuth />}>
                     <Route element={<MainLayout />}>
                         <Route path="/AddBusDriver" element={<BusDriverForm />} />
