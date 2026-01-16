@@ -105,7 +105,7 @@ export default function TourForm() {
           navigate('/BusDriverHistory');
         });
       } else {
-        const errorData = await response.json();
+        await response.json();
         swal.fire({
           icon: 'error',
           title: 'Erreur',

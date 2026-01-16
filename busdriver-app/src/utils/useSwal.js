@@ -17,10 +17,11 @@ const THEME_OPTIONS = {
 };
 
 // Utilisation: import swal from '../utils/useSwal'; puis swal.fire({ ... })
-export default {
+const swal = {
   fire: (options) => MySwal.fire({ ...THEME_OPTIONS, ...options }),
   ...MySwal
 };
+export default swal;
 
 // Ajoute ce CSS dans ton App.css ou index.css :
 // .swal2-theme-popup {
