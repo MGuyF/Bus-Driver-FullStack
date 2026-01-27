@@ -21,7 +21,7 @@ export const register = async (name, email, password) => {
     if (error.response && error.response.data) {
       return { success: false, error: error.response.data };
     }
-    return { success: false, error: { detail: 'Erreur réseau ou serveur.' } };
+    return { success: false, error: { detail: 'Erreur réseau ou serveur. Veuillez réessayer.' } };
   }
 };
 
