@@ -124,10 +124,7 @@ _For the full endpoint list, see the [API root](https://bus-driver-fullstack.onr
 - [x] Bus driver management (create, list, search, view, edit)
 - [x] Tour planning and history
 - [x] Automatic cleanup of demo data
-- [ ] Automated backend and frontend tests
-- [ ] Dashboard with fleet KPIs
 
-See the [open issues](https://github.com/MGuyF/Bus-Driver-FullStack/issues) for a full list of proposed features and known constraints.
 
 ---
 
